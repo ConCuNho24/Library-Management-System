@@ -99,6 +99,7 @@ public class Library
 
         mBorrowEvents[mBorrowEventCount] = new BorrowEvent(studentId, deweyNumber);
         mBorrowEventCount++;
+        mSubjectCounts.Increment(deweyNumber);
         return true;
     }
 
@@ -116,7 +117,7 @@ public class Library
         return false;
     }
 
-    // Not yet implemented - you must implement it. 
+    // Not yet implemented - you must implement it. /// DONE 
     public void SortCatalogue()
     {
         if (mBookCount <= 1)
@@ -126,7 +127,18 @@ public class Library
         }
 
         Book[] temp = new Book[mBookCount];
-        MergeSortBooks(0, mBookCount - 1, temp);
+
+        MergeSort(
+            mBooks,
+            0,
+            mBookCount - 1,
+            temp,
+            (a, b) => string.CompareOrdinal(a.DeweyNumber, b.DeweyNumber)
+        );
+        // for (int i = 0; i < mBookCount; i++)
+        // {
+        //     Console.WriteLine($"Sorted Book {i}: {mBooks[i].DeweyNumber} - {mBooks[i].Title}");
+        // }
         mIsCatalogueSorted = true;
     }
 
@@ -150,31 +162,45 @@ public class Library
         if (!ContainsBook(deweyNumber))
             return null;
 
-        BorrowEvent[] matching = new BorrowEvent[mBorrowEventCount];
-        int matchingCount = 0;
+        string[] matchingIds = new string[mBorrowEventCount];
+        int matchCount = 0;
 
         for (int i = 0; i < mBorrowEventCount; i++)
         {
             if (mBorrowEvents[i].DeweyNumber == deweyNumber)
             {
-                matching[matchingCount] = mBorrowEvents[i];
-                matchingCount++;
+                matchingIds[matchCount] = mBorrowEvents[i].StudentId;
+                matchCount++;
             }
         }
 
-        for (int i = 0; i < matchingCount; i++)
+        if (matchCount == 0)
+            return null;
+
+        string[] temp = new string[matchCount];
+
+        MergeSort(
+            matchingIds,
+            0,
+            matchCount - 1,
+            temp,
+            (a, b) => string.CompareOrdinal(a, b)
+        );
+
+        int currentCount = 1;
+
+        for (int i = 1; i < matchCount; i++)
         {
-            int count = 0;
-            string studentId = matching[i].StudentId;
-
-            for (int j = 0; j < matchingCount; j++)
+            if (matchingIds[i] == matchingIds[i - 1])
             {
-                if (matching[j].StudentId == studentId)
-                    count++;
+                currentCount++;
+                if (currentCount >= 3)
+                    return matchingIds[i];
             }
-
-            if (count >= 3)
-                return studentId;
+            else
+            {
+                currentCount = 1;
+            }
         }
 
         return null;
@@ -189,89 +215,12 @@ public class Library
         if (mBorrowEventCount == 0)
             return null;
 
-        string bestDewey = null;
-        int bestCount = 0;
-
-        for (int i = 0; i < mBorrowEventCount; i++)
-        {
-            string currentDewey = mBorrowEvents[i].DeweyNumber;
-            int count = 0;
-
-            for (int j = 0; j < mBorrowEventCount; j++)
-            {
-                if (mBorrowEvents[j].DeweyNumber == currentDewey)
-                    count++;
-            }
-
-            if (count > bestCount)
-            {
-                bestCount = count;
-                bestDewey = currentDewey;
-            }
-        }
-
-        return bestDewey;
+        return mSubjectCounts.GetMostFrequentKey();
     }
 
     // Optional private helper methods may be added below this line.
     // Optional private helper fields may also be added below this line.
     // Do not add any new public methods.
-
-    /// Mergesort implementation for sorting the mBooks array by DeweyNumber.
-    private void MergeSortBooks(int left, int right, Book[] temp)
-    {
-        if (left >= right)
-            return;
-
-        int mid = left + (right - left) / 2;
-
-        MergeSortBooks(left, mid, temp);
-        MergeSortBooks(mid + 1, right, temp);
-        MergeBooks(left, mid, right, temp);
-    }
-
-    private void MergeBooks(int left, int mid, int right, Book[] temp)
-    {
-        int i = left;
-        int j = mid + 1;
-        int k = left;
-
-        while (i <= mid && j <= right)
-        {
-            if (string.CompareOrdinal(mBooks[i].DeweyNumber, mBooks[j].DeweyNumber) <= 0)
-            {
-                temp[k] = mBooks[i];
-                i++;
-            }
-            else
-            {
-                temp[k] = mBooks[j];
-                j++;
-            }
-
-            k++;
-        }
-
-        while (i <= mid)
-        {
-            temp[k] = mBooks[i];
-            i++;
-            k++;
-        }
-
-        while (j <= right)
-        {
-            temp[k] = mBooks[j];
-            j++;
-            k++;
-        }
-
-        for (int index = left; index <= right; index++)
-        {
-            mBooks[index] = temp[index];
-        }
-    }
-
     int FindBookIndexBinSearch(string deweyNumber)
     {
         int left = 0;
@@ -290,5 +239,45 @@ public class Library
         }
 
         return -1; 
+    }
+
+    private void MergeSort<T>(T[] arr, int left, int right, T[] temp, Comparison<T> compare)
+    {
+        if (left >= right)
+            return;
+
+        int mid = (left + right) / 2;
+
+        MergeSort(arr, left, mid, temp, compare);
+        MergeSort(arr, mid + 1, right, temp, compare);
+        Merge(arr, left, mid, right, temp, compare);
+    }
+
+    private void Merge<T>(T[] arr, int left, int mid, int right, T[] temp, Comparison<T> compare)
+    {
+        int i = left;
+        int j = mid + 1;
+        int k = left;
+
+        while (i <= mid && j <= right)
+        {
+            if (compare(arr[i], arr[j]) <= 0)
+            {
+                temp[k++] = arr[i++];
+            }
+            else
+            {
+                temp[k++] = arr[j++];
+            }
+        }
+
+        while (i <= mid)
+            temp[k++] = arr[i++];
+
+        while (j <= right)
+            temp[k++] = arr[j++];
+
+        for (int idx = left; idx <= right; idx++)
+            arr[idx] = temp[idx];
     }
 }

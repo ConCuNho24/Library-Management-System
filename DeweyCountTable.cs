@@ -25,19 +25,55 @@ public class DeweyCountTable
     // Do NOT use string.GetHashCode().
     private int Hash(string key)
     {
-        throw new NotImplementedException("DeweyCountTable.Hash() not implemented");
+        int hash = 0;
+
+        for (int i = 0; i < key.Length; i++)
+        {
+            hash = (hash * 31 + key[i]) % mCapacity;
+        }
+
+        return hash;
+
     }
 
     // Not yet implemented - you must implement it.
     public bool Contains(string key)
     {
-        throw new NotImplementedException("DeweyCountTable.Contains() not implemented");
+        int index = Hash(key);
+        int startIndex = index;
+
+        while (mOccupied[index])
+        {
+            if (mKeys[index] == key)
+                return true;
+
+            index = (index + 1) % mCapacity;
+
+            if (index == startIndex)
+                break;
+        }
+
+        return false;
     }
 
     // Not yet implemented - you must implement it.
     public int GetCount(string key)
     {
-        throw new NotImplementedException("DeweyCountTable.GetCount() not implemented");
+        int index = Hash(key);
+        int startIndex = index;
+
+        while (mOccupied[index])
+        {
+            if (mKeys[index] == key)
+                return mCounts[index];
+
+            index = (index + 1) % mCapacity;
+
+            if (index == startIndex)
+                break;
+        }
+
+        return -1;
     }
 
     // Not yet implemented - you must implement it.
@@ -45,7 +81,30 @@ public class DeweyCountTable
     {
         // Recommended behaviour if the table is full and key is not already present:
         // throw new InvalidOperationException(...)
-        throw new NotImplementedException("DeweyCountTable.Increment() not implemented");
+        int index = Hash(key);
+        int startIndex = index;
+
+        while (mOccupied[index])
+        {
+            if (mKeys[index] == key)
+            {
+                mCounts[index]++;
+                return;
+            }
+
+            index = (index + 1) % mCapacity;
+
+            if (index == startIndex)
+                break;
+        }
+
+        if (mSize == mCapacity)
+            throw new InvalidOperationException("DeweyCountTable is full.");
+
+        mKeys[index] = key;
+        mCounts[index] = 1;
+        mOccupied[index] = true;
+        mSize++;
     }
 
     // Not yet implemented - you must implement it.
@@ -53,6 +112,21 @@ public class DeweyCountTable
     // A correct implementation may scan the table arrays internally.
     public string GetMostFrequentKey()
     {
-        throw new NotImplementedException("DeweyCountTable.GetMostFrequentKey() not implemented");
+        if (mSize == 0)
+            return null;
+
+        string mostFrequentKey = null;
+        int highestCount = -1;
+
+        for (int i = 0; i < mCapacity; i++)
+        {
+            if (mOccupied[i] && mCounts[i] > highestCount)
+            {
+                highestCount = mCounts[i];
+                mostFrequentKey = mKeys[i];
+            }
+        }
+
+        return mostFrequentKey;
     }
 }
