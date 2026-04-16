@@ -116,10 +116,18 @@ public class Library
         return false;
     }
 
-    // Not yet implemented - you must implement it.
+    // Not yet implemented - you must implement it. 
     public void SortCatalogue()
     {
-        throw new NotImplementedException("Library.SortCatalogue() not implemented");
+        if (mBookCount <= 1)
+        {
+            mIsCatalogueSorted = true;
+            return;
+        }
+
+        Book[] temp = new Book[mBookCount];
+        MergeSortBooks(0, mBookCount - 1, temp);
+        mIsCatalogueSorted = true;
     }
 
     // Not yet implemented - you must implement it.
@@ -127,7 +135,12 @@ public class Library
     // call to SortCatalogue), this method must throw InvalidOperationException.
     public int GetBookIndex(string deweyNumber)
     {
-        throw new NotImplementedException("Library.GetBookIndex() not implemented");
+        if(!mIsCatalogueSorted)
+            throw new InvalidOperationException("Catalogue is not sorted");
+        else
+        {
+            return FindBookIndexBinSearch(deweyNumber);
+        }
     }
 
     // Starter implementation
@@ -203,4 +216,79 @@ public class Library
     // Optional private helper methods may be added below this line.
     // Optional private helper fields may also be added below this line.
     // Do not add any new public methods.
+
+    /// Mergesort implementation for sorting the mBooks array by DeweyNumber.
+    private void MergeSortBooks(int left, int right, Book[] temp)
+    {
+        if (left >= right)
+            return;
+
+        int mid = left + (right - left) / 2;
+
+        MergeSortBooks(left, mid, temp);
+        MergeSortBooks(mid + 1, right, temp);
+        MergeBooks(left, mid, right, temp);
+    }
+
+    private void MergeBooks(int left, int mid, int right, Book[] temp)
+    {
+        int i = left;
+        int j = mid + 1;
+        int k = left;
+
+        while (i <= mid && j <= right)
+        {
+            if (string.CompareOrdinal(mBooks[i].DeweyNumber, mBooks[j].DeweyNumber) <= 0)
+            {
+                temp[k] = mBooks[i];
+                i++;
+            }
+            else
+            {
+                temp[k] = mBooks[j];
+                j++;
+            }
+
+            k++;
+        }
+
+        while (i <= mid)
+        {
+            temp[k] = mBooks[i];
+            i++;
+            k++;
+        }
+
+        while (j <= right)
+        {
+            temp[k] = mBooks[j];
+            j++;
+            k++;
+        }
+
+        for (int index = left; index <= right; index++)
+        {
+            mBooks[index] = temp[index];
+        }
+    }
+
+    int FindBookIndexBinSearch(string deweyNumber)
+    {
+        int left = 0;
+        int right = mBookCount - 1;
+
+        while (left <= right)
+        {
+            int mid = (right + left)/ 2;
+
+            if (mBooks[mid].DeweyNumber == deweyNumber)
+                return mid;
+            else if (string.CompareOrdinal(mBooks[mid].DeweyNumber, deweyNumber) < 0)
+                left = mid + 1;
+            else
+                right = mid - 1;
+        }
+
+        return -1; 
+    }
 }
