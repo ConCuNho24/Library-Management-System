@@ -1,0 +1,14 @@
+C:\CAB301\Asssignment1\bin\Debug\net10.0\CAB301_A1_prototype.exe
+C:\CAB301\Asssignment1\bin\Debug\net10.0\CAB301_A1_prototype.deps.json
+C:\CAB301\Asssignment1\bin\Debug\net10.0\CAB301_A1_prototype.runtimeconfig.json
+C:\CAB301\Asssignment1\bin\Debug\net10.0\CAB301_A1_prototype.dll
+C:\CAB301\Asssignment1\bin\Debug\net10.0\CAB301_A1_prototype.pdb
+C:\CAB301\Asssignment1\obj\Debug\net10.0\CAB301_A1_prototype.GeneratedMSBuildEditorConfig.editorconfig
+C:\CAB301\Asssignment1\obj\Debug\net10.0\CAB301_A1_prototype.AssemblyInfoInputs.cache
+C:\CAB301\Asssignment1\obj\Debug\net10.0\CAB301_A1_prototype.AssemblyInfo.cs
+C:\CAB301\Asssignment1\obj\Debug\net10.0\CAB301_A1_prototype.csproj.CoreCompileInputs.cache
+C:\CAB301\Asssignment1\obj\Debug\net10.0\CAB301_A1_prototype.dll
+C:\CAB301\Asssignment1\obj\Debug\net10.0\refint\CAB301_A1_prototype.dll
+C:\CAB301\Asssignment1\obj\Debug\net10.0\CAB301_A1_prototype.pdb
+C:\CAB301\Asssignment1\obj\Debug\net10.0\CAB301_A1_prototype.genruntimeconfig.cache
+C:\CAB301\Asssignment1\obj\Debug\net10.0\ref\CAB301_A1_prototype.dll

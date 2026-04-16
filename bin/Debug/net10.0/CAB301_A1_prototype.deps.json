@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "CAB301_A1_prototype/1.0.0": {
+        "runtime": {
+          "CAB301_A1_prototype.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "CAB301_A1_prototype/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
