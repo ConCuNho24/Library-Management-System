@@ -223,43 +223,43 @@ public class Library
     // Do not add any new public methods.
     int FindBookIndexBinSearch(string deweyNumber)
     {
-        int left = 0;
-        int right = mBookCount - 1;
+        int l = 0;
+        int r = mBookCount - 1;
 
-        while (left <= right)
+        while (l <= r)
         {
-            int mid = (right + left)/ 2;
+            int m = (r + l)/ 2;
 
-            if (mBooks[mid].DeweyNumber == deweyNumber)
-                return mid;
-            else if (string.CompareOrdinal(mBooks[mid].DeweyNumber, deweyNumber) < 0)
-                left = mid + 1;
+            if (mBooks[m].DeweyNumber == deweyNumber)
+                return m;
+            else if (string.CompareOrdinal(mBooks[m].DeweyNumber, deweyNumber) < 0)
+                l = m + 1;
             else
-                right = mid - 1;
+                r = m - 1;
         }
 
         return -1; 
     }
 
-    private void MergeSort<T>(T[] arr, int left, int right, T[] temp, Comparison<T> compare)
+    private void MergeSort<T>(T[] arr, int l, int r, T[] temp, Comparison<T> compare)
     {
-        if (left >= right)
+        if (l >= r)
             return;
 
-        int mid = (left + right) / 2;
+        int m = (l + r) / 2;
 
-        MergeSort(arr, left, mid, temp, compare);
-        MergeSort(arr, mid + 1, right, temp, compare);
-        Merge(arr, left, mid, right, temp, compare);
+        MergeSort(arr, l, m, temp, compare);
+        MergeSort(arr, m + 1, r, temp, compare);
+        Merge(arr, l, m, r, temp, compare);
     }
 
-    private void Merge<T>(T[] arr, int left, int mid, int right, T[] temp, Comparison<T> compare)
+    private void Merge<T>(T[] arr, int l, int m, int r, T[] temp, Comparison<T> compare)
     {
-        int i = left;
-        int j = mid + 1;
-        int k = left;
+        int i = l;
+        int j = m + 1;
+        int k = l;
 
-        while (i <= mid && j <= right)
+        while (i <= m && j <= r)
         {
             if (compare(arr[i], arr[j]) <= 0)
             {
@@ -271,13 +271,13 @@ public class Library
             }
         }
 
-        while (i <= mid)
+        while (i <= m)
             temp[k++] = arr[i++];
 
-        while (j <= right)
+        while (j <= r)
             temp[k++] = arr[j++];
 
-        for (int idx = left; idx <= right; idx++)
+        for (int idx = l; idx <= r; idx++)
             arr[idx] = temp[idx];
     }
 }
